@@ -17,7 +17,7 @@ class Tree:
     def find_children(self):
         for direction in (0, 1), (1, 0), (0, -1), (-1, 0):
             nextPoint = self.move_self(direction)
-            if nextPoint == (len(self.maze[0])-1, len(self.maze)-1):
+            if nextPoint == (len(self.maze[-1])-1, len(self.maze)-1):
                 return self.path+[self.point, nextPoint]
             elif nextPoint not in self.path:
                 value = get_value(self.maze, nextPoint)
@@ -25,73 +25,18 @@ class Tree:
                     self.createChild(nextPoint, self.ticket)
                 elif value == 1 and self.ticket:
                     self.createChild(nextPoint, False)
-        for child in self.children:
-            n = child.find_children()
-            if n != None: return n
-
 
 def get_value(m, (x, y)):
     if y < 0 or x < 0 or y >= len(m) or x >= len(m[0]):
         return '-'
     return m[y][x]
 
-def solve(m):
-    for x in m:
-        print(x)
-    t = Tree(m, (0, 0), True)
-    return t.find_children()
-
-
-seven = [
-    [0,1,1,0],
-    [0,0,0,1],
-    [1,1,0,0],
-    [1,1,1,0]]
-
-eleven = [
-    [0,0,0,0,0,0],
-    [1,1,1,1,1,0],
-    [0,0,0,0,0,0],
-    [0,1,1,1,1,1],
-    [0,1,1,1,1,1],
-    [0,0,0,0,0,0]]
-
-deadends = [
-    [0,0,0,0,0,1],
-    [1,1,1,1,1,0],
-    [1,0,1,0,0,0],
-    [0,1,0,0,1,1],
-    [0,1,0,1,1,1],
-    [0,0,0,0,0,0]]
-
-all_zeros = [
-    [0,0,0,0,0,0],
-    [0,0,0,0,0,0],
-    [0,0,0,0,0,0],
-    [0,0,0,0,0,0],
-    [0,0,0,0,0,0],
-    [0,0,0,0,0,0]]
-
-abnormal = [
-    [0,1,0,0,1,0,1,1],
-    [0,1,0,1,1,0,1],
-    [0,1,0,1,1,0,1],
-    [0,1,0,1,1,0,1,0],
-    [0,1,0,1,1,0,1,0,1,0,1,0],
-    [0,1,0,1,1,0,1],
-    [0,1,0,1,1,0,1],
-    [0,1,0,1,1,0,1,1],
-    [0,1,0,1,1,0,1],
-    [0,1,0,1,1,0,1],
-    [0,0,0,1,1,0,0],
-]
-
-for m in [seven, eleven, deadends, all_zeros, abnormal]:
-    for n in m:
-        print(n)
-    s = solution(m)
-    if s == None:
-        print(0)
-    else:
-        print(s)
-        print(len(s))
+def solution(m):
+    queue = [Tree(m, (0, 0), True)]
+    path = None
+    while len(queue) > 0 and path == None:
+        path = queue[0].find_children()
+        if path == None:
+            queue += queue[0].children
+            del queue[0]
+    return path
