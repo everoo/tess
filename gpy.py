@@ -8,19 +8,21 @@ class Tree:
         self.ticket = ticket
         self.children = []
 
-    def move(self, dir):
-        return self.path[-1][0]+dir[0], self.path[-1][1]+dir[1]
-
     def addChild(self, nextPoint, hasTicket):
-        # all_points.append(nextPoint)
         self.children.append(Tree(self.path+[nextPoint], hasTicket))
 
     def find_children(self, maze):
+        #harder to read but faster than *||*
+        #just hard checks to see if it's next to the end because it's always passable
+        if (self.path[-1][0] == len(maze[-1])-2 and self.path[-1][1] == len(maze)-1) or (self.path[-1][1] == len(maze)-2 and self.path[-1][0] == len(maze[-1])-1):
+            return self.path+[(len(maze[-1])-1, len(maze)-1)]
         for direction in (0, 1), (1, 0), (0, -1), (-1, 0):
-            nextPoint = self.move(direction)
-            if nextPoint == (len(maze[-1])-1, len(maze)-1):
-                return self.path+[nextPoint]
-            elif nextPoint not in self.path:
+            nextPoint = self.path[-1][0]+direction[0], self.path[-1][1]+direction[1]
+            # *||*
+            # if nextPoint == (len(maze[-1])-1, len(maze)-1):
+            #     return self.path+[nextPoint]
+            # elif ...
+            if nextPoint not in self.path:
                 value = get_value(maze, nextPoint)
                 if value == 0:
                     self.addChild(nextPoint, self.ticket)
@@ -29,14 +31,20 @@ class Tree:
 
 def solution(m):
     queue = [Tree([(0, 0)], True)]
+    area = len(m)*len(m[0])*2
+    ## Reducing area significantly increases speed 
+    ## this is currently the max to guarantee the correct answer 
+    ## but my tests showed it working up until 100
     while len(queue) > 0:
-        if len(queue) > 400:
+        if len(queue) > area:
+            ## reduces the queue down to the shortest path for each point
+            ## keeps track of if it has broken a wall already
             new_queue = {}
             for t in queue:
                 key = t.path[-1], t.ticket
                 if key not in new_queue:
                     new_queue[key] = t
-                elif len(t.path) < len(new_queue[key].path):
+                elif len(t.path) <= len(new_queue[key].path):
                     new_queue[key] = t
             queue = new_queue.values()
         path = queue[0].find_children(m)
@@ -44,4 +52,5 @@ def solution(m):
             queue += queue[0].children
             del queue[0]
         else:
-            return path
+            return len(path)
+    return 0
