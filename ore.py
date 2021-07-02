@@ -17,12 +17,12 @@ def matrixDet(m):
 
 def solution(m):
     sums = [sum(s) for s in m]
-    if sums.count(0) == 1:
+    if sums.count(0)==1:
         return [1, 1]
-    m = [[Fraction(n, sums[i]) if sums[i] > 0 else 0 for n in s] for i, s in enumerate(m)]
+    m = [[Fraction(n, sums[i]) if sums[i] else 0 for n in s] for i, s in enumerate(m)]
     q, r = [], []
     for k, state in enumerate(m):
-        if sums[k]>0:
+        if sums[k]:
             for t in q, r: t.append([])
             for i, s in enumerate(state):
                 (q[-1] if sums[i] else r[-1]).append(s)
