@@ -1,39 +1,40 @@
 from fractions import Fraction
 
-def round_tracker(t):
-    return [round(v, 5) for v in t]
+def find_lcm(x, y):
+    lcm = x*y
+    while(y):
+        x, y = y, x % y
+    return lcm // x
 
-def fractionize(t, denom):
-    return [Fraction(f).limit_denominator(max_denominator=denom) for f in t]
+def matrixMinor(m,i,j):
+    return [row[:j] + row[j+1:] for row in (m[:i]+m[i+1:])]
 
-def find_next(ore, tracker):
-    oldTracker = tracker[:]
-    for i, v in enumerate(tracker):
-        s = sum(ore[i])
-        if v > 0 and s > 0:
-            tracker[i] = 0.0
-            for k, vv in enumerate(ore[i]):
-                tracker[k] += float(vv)/s*v
-    if round_tracker(tracker) == round_tracker(oldTracker):
-        return tracker
-    else:
-        return find_next(ore, tracker)
-
-def multiply(m):
-    d = 1
-    for n in m:
-        mm = sum(n)
-        if mm > 0: d*=mm
-    return d
-
-def increase_fraction(m, fra):
-    return fra[0]*m, fra[1]*m
+def matrixDet(m):
+    l = len(m)
+    if l == 2:
+        return m[0][0]*m[1][1]-m[0][1]*m[1][0]
+    return sum([((-1)**c)*m[0][c]*matrixDet(matrixMinor(m,0,c)) for c in range(l)])
 
 def solution(m):
-    t = find_next(m, [float(n)/sum(m[0]) for n in m[0]])
-    fra = fractionize(t, multiply(m))
-    ret = {i:(f.numerator,f.denominator) for i, f in enumerate(fra) if sum(m[i]) == 0}
-    max_denom = max([n[1] for n in ret.values()])
-    for k, v in ret.items():
-        ret[k] = increase_fraction(max_denom/v[1], v)
-    return [n[0] for n in ret.values()]+[ret.values()[0][1]]
+    sums = [sum(s) for s in m]
+    if sums.count(0) == 1:
+        return [1, 1]
+    m = [[Fraction(n, sums[i]) if sums[i] > 0 else 0 for n in s] for i, s in enumerate(m)]
+    q, r = [], []
+    for k, state in enumerate(m):
+        if sums[k]>0:
+            for t in q, r: t.append([])
+            for i, s in enumerate(state):
+                (q[-1] if sums[i] else r[-1]).append(s)
+    l = range(len(q))
+    inverse = [[1-q[x][y] if x==y else -q[x][y] for y in l] for x in l]
+    determinant = matrixDet(inverse)
+    if l == [0, 1]:
+        inverse = [inverse[1][1]/determinant, inverse[0][1]/-determinant]
+    else:
+        inverse = [((-1)**t) * matrixDet(matrixMinor(inverse,t,0))/determinant for t in l]
+    finals = [sum(a*b for a, b in zip(inverse, y_col)) for y_col in zip(*r)]
+    lcm = find_lcm(finals[0].denominator, finals[1].denominator)
+    for i in range(2, len(finals)):
+        lcm = find_lcm(lcm, finals[i].denominator)
+    return [f.numerator*(lcm//f.denominator) for f in finals] + [lcm]
