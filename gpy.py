@@ -54,3 +54,15 @@ def solution(m):
         else:
             return len(path)
     return 0
+
+## For fuel injection perfection
+def solution(n):
+    n, count = int(n), 0
+    while n != 1:
+        count += 1
+        b = bin(n)
+        n = (n + (1, -1)[b[-2]=='0' or n == 3], n >> 1)[b[-1] == '0']
+    return count
+
+for n in range(1, 100)+[int('9'*309)]:
+    print solution(n), bin(n)
