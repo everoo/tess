@@ -66,3 +66,14 @@ def solution(n):
 
 for n in range(1, 100)+[int('9'*309)]:
     print solution(n), bin(n)
+    
+## For free the bunny workers
+# from itertools import combinations as cmb
+
+# def solution(num_buns, num_required):
+#     ## if you do it twice remember it
+#     iter_buns = range(num_buns)
+#     ## find and sort all the combinations (modulo is to roll the 0s over)
+#     combs = sorted(cmb(iter_buns, (num_required-1)%(num_buns+1)), key=lambda x: x[::-1])
+#     ## create a num_buns by len(combs) matrix with all y values in the associated combinations removed
+#     return [[k for k, v in enumerate(combs) if i not in v] for i in iter_buns[::-1]]
