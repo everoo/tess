@@ -1,3 +1,6 @@
+//not really accurate but close enough to look cool
+//can't quite get the electrons to behave right
+
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
