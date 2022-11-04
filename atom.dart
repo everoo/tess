@@ -140,3 +140,33 @@ class Particle {
 // N 1839 0
 // P 1836 1
 // E 1   -1
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+    img {
+      clip-path: url(#shape);
+      width: 18em;
+      height: 18em;
+      object-fit: cover;
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+    }
+    </style>
+  </head>
+  <body>
+    <img src="jesusCat.png" >    
+      <svg width="0" height="0">
+      <defs>
+        <clipPath id="shape" clipPathUnits="objectBoundingBox">
+          <path fill="none" d="M 0.3 0.6 L 0.75 0.075 L 0.975 0 L 0.9 0.225 L 0.375 0.675 C 0.45 0.75 0.45 0.825 0.525 0.75 C 0.525 0.825 0.6 0.9 0.525 0.9 A 0.1065 0.1065 90 0 1 0.45 0.975 A 0.375 0.375 90 0 0 0.3 0.75 Q 0.2625 0.7425 0.2625 0.7875 T 0.15 0.885 T 0.09 0.825 T 0.1875 0.7125 T 0.225 0.675 A 0.375 0.375 90 0 0 0 0.525 A 0.1065 0.1065 90 0 1 0.075 0.45 C 0.075 0.375 0.15 0.45 0.225 0.3 C 0.15 0.525 0.225 0.525 0.3 0.6 M 0.75 0.075 L 0.714 0.258 L 0.9 0.225 L 0.795 0.189 L 0.75 0.075"/>
+        </clipPath>
+      </defs>
+    </svg>
+  </body>
+</html>
+
+
